@@ -2,7 +2,7 @@ var numdigits = 2;
 
 var wordlength = 2;
 
-var symbols = new Array();
+var symbols = [];
 
 var scoreleftstr = "Human: 0";
 var scorerightstr = "Computer 0";
@@ -21,6 +21,7 @@ symbols[8] = "I";
 symbols[9] = "K";
 
 function showinstructions() {
+    "use strict";
   alert("The computer thinks of a 'word' of the set length using the set number of letters.  You try to guess the computer's word.  For each correct letter in the correct location you score one bull; for each additional  correct letter in the wrong location you score one cow.  You score is indicated in the history below to the right of each guess: bulls first in white. then cows in yellow.");};
 
 // function symbolmap(n) {
@@ -205,8 +206,8 @@ function countsame(guess) {
 //   hypotheses ------------------
 
 function hypo() {
-    this.digs = new smallSet()
-    this.locs = new smallSet()
+    this.digs = Object.create( smallSet )
+    this.locs = Object.create( smallSet )
     this.set = function(ds,ls) {
 	this.digs = ds;
       this.locs = ls; };
@@ -238,16 +239,16 @@ function hypo() {
       return res; };
     this.peg = function(pg) {
 	if (pg.score == 2) {
-	    var pgdg = new smallSet();
+	    var pgdg = Object.create( smallSet );
 	    pgdg.add(pg.dig);
-	    var pglc = new smallSet();
+	    var pglc = Object.create( smallSet );
 	    pglc.add(pg.loc);
 	    var pghp = new hypo();
 	    pghp.set(pgdg,pglc);
 	    this.resolve(pghp); }
 	else if (pg.score == 1) {
 	    this.locs.remove(pg.loc);
-	    var pgdg = new smallSet();
+	    var pgdg = Object.create( smallSet );
 	    pgdg.add(pg.dig);
 	    this.digs = this.digs.inter(pgdg); }
 	else {
@@ -258,14 +259,14 @@ function hypo() {
     };
 };
 
-var testdigs1 = new smallSet();
-testdigs1.set([1,2,4]);
-var testdigs2 = new smallSet();
-testdigs2.set([1,2,4,5]);
-var testlocs1 = new smallSet();
-testlocs1.set([2,3]);
-var testlocs2 = new smallSet();
-testlocs2.set([0,2,3]);
+var testdigs1 = Object.create( smallSet );
+testdigs1.addAll([1,2,4]);
+var testdigs2 = Object.create( smallSet );
+testdigs2.addAll([1,2,4,5]);
+var testlocs1 = Object.create( smallSet );
+testlocs1.addAll([2,3]);
+var testlocs2 = Object.create( smallSet );
+testlocs2.addAll([0,2,3]);
 var testhypo1 = new hypo();
 testhypo1.set(testdigs1,testlocs1);
 var testhypo2 = new hypo();
@@ -279,7 +280,7 @@ function peg(d,l,s) {
 };
 
 function makeU(n) {
-    var res = new smallSet();
+    var res = Object.create( smallSet );
     for (var i=0;i<n;i++) {
 	res.add(i); }
     return res; };
@@ -407,7 +408,7 @@ function hypothesis() {
   // 	      oldhypos.forEach(cutfun);
   // 	  }
   // 	  else if (curlocslen < dups.length){
-  // 	    var cutfun = function(h){h.locs=new smallSet();};
+  // 	    var cutfun = function(h){h.locs=Object.create( smallSet );};
   // 	      dups.forEach(cutfun);
   // 	  };
   // 	  newhypos = newhypos.concat(dups);
@@ -415,7 +416,7 @@ function hypothesis() {
   //     this.set(newhypos);
   // };
     this.grplocs = function(lst){
-      var tmpss = new smallSet();
+      var tmpss = Object.create( smallSet );
 	var hps = this.hypos;
       lst.forEach(function(k){
 	  tmpss = (hps[k]).locs.union(tmpss);
@@ -473,9 +474,9 @@ function hypothesis() {
   this.checkcowgrps = function(){
       for(var i=0;i<this.cows.length;i++){
 	  var cur = this.cows[i];
-	  var cursetdig = new smallSet();
+	  var cursetdig = Object.create( smallSet );
 	  cursetdig.add(cur.dig);
-	  var cursetloc = new smallSet();
+	  var cursetloc = Object.create( smallSet );
 	  cursetloc.add(cur.loc);
 	  for(var j=0;j<wordlength;j++){
 	      var hyp = this.hypos[j];
@@ -544,20 +545,20 @@ function hypothesis() {
     };
 };
 
-var testdigs3 = new smallSet();
-testdigs3.set([0]);
-var testdigs4 = new smallSet();
-testdigs4.set([1]);
-var testdigs5 = new smallSet();
-testdigs5.set([0,1]);
-var testlocs3 = new smallSet();
-testlocs3.set([0,1]);
-var testlocs4 = new smallSet();
-testlocs4.set([0,1]);
-var testlocs5 = new smallSet();
-testlocs5.set([0]);
-var testlocs6 = new smallSet();
-testlocs6.set([1]);
+var testdigs3 = Object.create( smallSet );
+testdigs3.addAll([0]);
+var testdigs4 = Object.create( smallSet );
+testdigs4.addAll([1]);
+var testdigs5 = Object.create( smallSet );
+testdigs5.addAll([0,1]);
+var testlocs3 = Object.create( smallSet );
+testlocs3.addAll([0,1]);
+var testlocs4 = Object.create( smallSet );
+testlocs4.addAll([0,1]);
+var testlocs5 = Object.create( smallSet );
+testlocs5.addAll([0]);
+var testlocs6 = Object.create( smallSet );
+testlocs6.addAll([1]);
 var testhypo3 = new hypo();
 testhypo3.set(testdigs3,testlocs3);
 var testhypo4 = new hypo();
@@ -723,7 +724,7 @@ function guesser(){
 	};
 	var hypmodlst = this.Hyps[ind];
 	var j = this.thread[ind];
-	if(j==hypmodlst.length){
+	if(j===hypmodlst.length){
 	    this.thread[ind-1]++;
 	    this.resetthread(ind);
 	    return this.updateHyp(ind-1,this.curHyps.pop());
